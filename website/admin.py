@@ -1,3 +1,4 @@
+from website.models.review import Review
 from django.contrib import admin
 from .models.category import Category
 from .models.subcategory import SubCategory
@@ -14,3 +15,4 @@ admin.site.register(Product)
 admin.site.register(Customer)
 admin.site.register(Order)
 admin.site.register(Mail)
+admin.site.register(Review)
