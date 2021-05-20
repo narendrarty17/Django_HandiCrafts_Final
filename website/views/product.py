@@ -1,0 +1,50 @@
+# importing django classes and methods
+from django.shortcuts import render, redirect
+from django.views import View
+
+# importing our data models
+from website.models.product import Product
+
+
+# definig class for Login
+class ProductItem(View):
+    def get(self,request):
+        return redirect('home')
+
+    def post(self,request):
+        product_id = request.POST.get('product_id')
+        print("Product_id: ", product_id)
+        product=Product.get_product_by_exact_id(product_id)
+
+        # code for adding product in the cart
+        cart=request.session.get('cart')
+        remove = request.POST.get('remove')
+        change_in_quantity = request.POST.get('change_in_quantity')
+        print("Change in Quantity: ", change_in_quantity)
+        if (cart and product) and change_in_quantity:
+            quantity = cart.get(product_id)
+            if quantity:
+                if remove:
+                    if cart[product_id] <= 1:
+                        cart.pop(product_id)
+                    else:
+                        cart[product_id] = quantity - 1
+                else:
+                    cart[product_id] = quantity + 1
+            else:
+                cart[product_id] = 1
+        elif product and change_in_quantity:
+            cart = {}
+            cart[product_id] = 1
+
+        if cart:
+            request.session['cart'] = cart
+        print("Cart : ", cart)
+
+
+        data = {}
+        data['product'] = product
+        print(product)
+        return render(request,'product.html',data)
+
+    
